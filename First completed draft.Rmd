@@ -1,0 +1,433 @@
+---
+title: "Kaiden Paper 1 draft"
+author: "Vas and Psych"
+date: '2023-03-16'
+output: html_document
+---
+---
+title: "Kaiden Paper 1"
+author: "Vas Kaiden"
+format: html
+editor: visual
+---
+
+Importing the package library
+
+{r}
+
+echo=FALSE
+error=FALSE
+warning=FALSE
+library(bootnet)
+library(networktools)
+library(NetworkComparisonTest)
+library(qgraph)
+library(psych)
+library(psychotools)
+library(tidyverse)
+library(semTools)
+library(semPlot)
+library(haven)
+library(readr)
+library(dplyr)
+library(tidyr)
+
+
+Import the dataset
+
+{r}
+echo=FALSE
+error=FALSE
+warning=FALSE
+data<-read_sav("C:/Users/KJisc/OneDrive/Documents/UNi/PhD/Data Files/Screen Time & Psychosis.sav")
+names(data) 
+
+The echo: false option disables the printing of code (only output is displayed).
+
+We select the variables we need in the analysis from the bigger dataset
+
+{r}
+echo=FALSE
+error=FALSE
+warning=FALSE
+myvars<-c("sex", "interview_age", "eventname", "screen1_wkdy_y", "screen2_wkdy_y", "screen3_wkdy_y", "screen4_wkdy_y", "screen5_wkdy_y", "screen_wkdy_y", "screen7_wknd_y", "screen8_wknd_y", "screen9_wknd_y", "screen10_wknd_y", "screen11_wknd_y", "screen12_wknd_y", "screentime_5_wkdy_hr", "screentime_5_wkdy_min", "screentime_6_wkdy_hr", "screentime_6_wkdy_min", "screentime_7_wkdy_hr", "screentime_7_wkdy_min", "screentime_8_wkdy_hr", "screentime_8_wkdy_min", "screentime_9_wkdy_hr",
+"screentime_9_wkdy_min", "screentime_wkdy_typical_hr",
+"screentime_wkdy_typical_min","screentime_7_wknd_hr",
+"screentime_7_wknd_min","screentime_8_wknd_hr",
+"screentime_8_wknd_min","screentime_9_wknd_hr",
+"screentime_9_wknd_min","screentime_10_wknd_hr",
+"screentime_1_wkdy_hr","screentime_10_wknd_min",
+"screentime_11_wknd_hr","screentime_11_wknd_min",
+"screentime_12_wknd_hr","screentime_12_wknd_min",
+"screentime_13_wknd_hr","screentime_13_wknd_min",
+"screentime_14_wknd_hr","screentime_14_wknd_min",
+"screentime_15_wknd_hr","screentime_1_wkdy_min",
+"screentime_15_wknd_min","screentime_wknd_typical_hr",
+"screentime_wknd_t_min","screentime_2_wkdy_hr", "screentime_2_wkdy_min","screentime_3_wkdy_min", "screentime_3_wkdy_hr",
+"screentime_smq_soc_med_hr", "screentime_smq_sm_min", "screentime_4_wkdy_hr", "screentime_4_wkdy_min", "prodromal_1_y", 
+"pps_1_bother_yn",
+"prodromal_1b_y",
+"prodromal_2_y",
+"pps_2_bother_yn",
+"prodromal_2b_y",
+"prodromal_3_y",
+"pps_3_bother_yn",
+"prodromal_3b_y",
+"prodromal_4_y",
+"pps_4_bother_yn",
+"prodromal_4b_y",
+"prodromal_5_y",
+"pps_5_bother_yn",
+"prodromal_5b_y",
+"prodromal_6_y",
+"pps_6_bother_yn",
+"prodromal_6b_y",
+"prodromal_7_y",
+"pps_7_bother_yn",
+"prodromal_7b_y",
+"prodromal_8_y",
+"pps_8_bother_yn",
+"prodromal_8b_y",
+"prodromal_9_y",
+"pps_9_bother_yn",
+"prodromal_9b_y",
+"prodromal_10_y",
+"pps_10_bother_yn",
+"prodromal_10b_y",
+"prodromal_11_y",
+"pps_11_bother_yn",
+"prodromal_11b_y",
+"prodromal_12_y",
+"pps_12_bother_yn",
+"prodromal_12b_y",
+"prodromal_13_y",
+"pps_13_bother_yn",
+"prodromal_13b_y",
+"prodromal_14_y",
+"pps_14_bother_yn",
+"prodromal_14b_y",
+"prodromal_15_y",
+"pps_15_bother_yn",
+"prodromal_15b_y",
+"prodromal_16_y",
+"pps_16_bother_yn",
+"prodromal_16b_y",
+"prodromal_17_y",
+"pps_17_bother_yn",
+"prodromal_17b_y",
+"prodromal_18_y",
+"pps_18_bother_yn",
+"prodromal_18b_y",
+"prodromal_19_y",
+"pps_19_bother_yn",
+"prodromal_19b_y",
+"prodromal_20_y",
+"pps_20_bother_yn","prodromal_20b_y",
+"prodromal_21_y",
+"pps_21_bother_yn","prodromal_21b_y")
+
+data1<-data[myvars]
+describe(data1)
+view(data1)
+names(data1)
+
+computing variables after selecting the variables I am interested in.
+
+{r}
+echo=FALSE
+warning=FALSE
+error=FALSE
+
+
+# Replace NA on multiple columns with 0
+
+data12 <- data1 %>% 
+    mutate_at(c("screen1_wkdy_y", "screen2_wkdy_y", "screen3_wkdy_y", "screen4_wkdy_y", "screen5_wkdy_y", "screen_wkdy_y", "screen7_wknd_y", "screen8_wknd_y", "screen9_wknd_y", "screen10_wknd_y", "screen11_wknd_y", "screen12_wknd_y", "screentime_5_wkdy_hr", "screentime_5_wkdy_min", "screentime_6_wkdy_hr", "screentime_6_wkdy_min", "screentime_7_wkdy_hr", "screentime_7_wkdy_min", "screentime_8_wkdy_hr", "screentime_8_wkdy_min", "screentime_9_wkdy_hr",
+"screentime_9_wkdy_min", "screentime_wkdy_typical_hr",
+"screentime_wkdy_typical_min","screentime_7_wknd_hr",
+"screentime_7_wknd_min","screentime_8_wknd_hr",
+"screentime_8_wknd_min","screentime_9_wknd_hr",
+"screentime_9_wknd_min","screentime_10_wknd_hr",
+"screentime_1_wkdy_hr","screentime_10_wknd_min",
+"screentime_11_wknd_hr","screentime_11_wknd_min",
+"screentime_12_wknd_hr","screentime_12_wknd_min",
+"screentime_13_wknd_hr","screentime_13_wknd_min",
+"screentime_14_wknd_hr","screentime_14_wknd_min",
+"screentime_15_wknd_hr","screentime_1_wkdy_min",
+"screentime_15_wknd_min","screentime_wknd_typical_hr",
+"screentime_wknd_t_min","screentime_2_wkdy_hr", "screentime_2_wkdy_min","screentime_3_wkdy_min", "screentime_3_wkdy_hr",
+"screentime_smq_soc_med_hr", "screentime_smq_sm_min", "screentime_4_wkdy_hr", "screentime_4_wkdy_min", "prodromal_1_y", 
+"pps_1_bother_yn",
+"prodromal_1b_y",
+"prodromal_2_y",
+"pps_2_bother_yn",
+"prodromal_2b_y",
+"prodromal_3_y",
+"pps_3_bother_yn",
+"prodromal_3b_y",
+"prodromal_4_y",
+"pps_4_bother_yn",
+"prodromal_4b_y",
+"prodromal_5_y",
+"pps_5_bother_yn",
+"prodromal_5b_y",
+"prodromal_6_y",
+"pps_6_bother_yn",
+"prodromal_6b_y",
+"prodromal_7_y",
+"pps_7_bother_yn",
+"prodromal_7b_y",
+"prodromal_8_y",
+"pps_8_bother_yn",
+"prodromal_8b_y",
+"prodromal_9_y",
+"pps_9_bother_yn",
+"prodromal_9b_y",
+"prodromal_10_y",
+"pps_10_bother_yn",
+"prodromal_10b_y",
+"prodromal_11_y",
+"pps_11_bother_yn",
+"prodromal_11b_y",
+"prodromal_12_y",
+"pps_12_bother_yn",
+"prodromal_12b_y",
+"prodromal_13_y",
+"pps_13_bother_yn",
+"prodromal_13b_y",
+"prodromal_14_y",
+"pps_14_bother_yn",
+"prodromal_14b_y",
+"prodromal_15_y",
+"pps_15_bother_yn",
+"prodromal_15b_y",
+"prodromal_16_y",
+"pps_16_bother_yn",
+"prodromal_16b_y",
+"prodromal_17_y",
+"pps_17_bother_yn",
+"prodromal_17b_y",
+"prodromal_18_y",
+"pps_18_bother_yn",
+"prodromal_18b_y",
+"prodromal_19_y",
+"pps_19_bother_yn",
+"prodromal_19b_y",
+"prodromal_20_y",
+"pps_20_bother_yn","prodromal_20b_y",
+"prodromal_21_y",
+"pps_21_bother_yn","prodromal_21b_y"), ~replace_na(.,0))
+
+
+data13<-data12%>%mutate(disL= prodromal_1b_y + prodromal_2b_y + prodromal_3b_y + prodromal_4b_y + prodromal_5b_y + prodromal_6b_y + prodromal_7b_y + prodromal_8b_y +
+prodromal_9b_y +
+prodromal_10b_y +
+prodromal_11b_y +
+prodromal_12b_y +
+prodromal_13b_y +
+prodromal_14b_y +
+prodromal_15b_y +
+prodromal_16b_y +
+prodromal_17b_y +
+prodromal_18b_y +
+prodromal_19b_y +
+prodromal_20b_y +
+prodromal_21b_y)%>%mutate(ScrTV= screen1_wkdy_y + screen7_wknd_y + screentime_7_wknd_hr +
+(screentime_7_wknd_min/60) + screentime_1_wkdy_hr + (screentime_1_wkdy_min/60))%>%mutate(ScrOnlineV= screen2_wkdy_y + screen8_wknd_y + screentime_8_wknd_hr +
+(screentime_8_wknd_min/60) + screentime_2_wkdy_hr + (screentime_2_wkdy_min/60))%>%mutate(ScrVG= screen3_wkdy_y + screen9_wknd_y + screentime_9_wknd_hr + (screentime_9_wknd_min/60) + screentime_10_wknd_hr + (screentime_10_wknd_min/60) + screentime_3_wkdy_hr + (screentime_3_wkdy_min/60) + screentime_4_wkdy_hr + (screentime_4_wkdy_min/60))%>%mutate(ScrText= screen4_wkdy_y + screen10_wknd_y + screentime_5_wkdy_hr + (screentime_5_wkdy_min/60) + screentime_11_wknd_hr + (screentime_11_wknd_min/60))%>%mutate(ScrSM= screen5_wkdy_y + screen11_wknd_y + screentime_6_wkdy_hr + (screentime_6_wkdy_min/60) + screentime_12_wknd_hr + (screentime_12_wknd_min/60))%>%mutate(ScrVChat= screen_wkdy_y + screen12_wknd_y + screentime_8_wkdy_hr + (screentime_8_wkdy_min/60) + screentime_14_wknd_hr + (screentime_14_wknd_min/60))
+
+view(data13)
+
+#At this stage you create a new dataset whith just the varibales you will use for the network
+myvarsnet<-c("disL", "ScrTV", "ScrOnlineV", "ScrVG", "ScrText", "ScrSM", "ScrVChat")
+datanet<-data13[myvarsnet]
+
+
+Estimate Network
+
+{r echo=FALSE, warning=FALSE, error=FALSE}
+network1 <- estimateNetwork(datanet, default="EBICglasso")
+
+Grouping nodes
+
+{r echo=FALSE, warning=FALSE, error=FALSE}
+#group Prodromal Psychosis and screen time nodes
+groups1=list("Psychotic"=c(1), "Screen time"=c(2:7))
+
+Estimate Network Stability by bootstrapping network
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+#Default Bootstrapping
+b1 <- bootnet(network1, boots=1000, statistics=c("strength", "expectedInfluence", "edge"))
+#Case Dropping Bootstrapping
+b2 <- bootnet(network1, boots=1000, type="case", statistics=c("strength", "expectedInfluence", "edge"))
+
+Get centrality stability coefficient
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+corStability(b2)
+
+Stability of the Network Plotting
+
+{r}
+pdf("CentrStability1.pdf")
+plot(b2)
+dev.off()
+
+Strength Centrality Diff Test, saved as pdf
+
+{r}
+pdf("CentralityDifference1.pdf")
+plot(b1, "strength", order="sample", labels=TRUE)
+dev.off()
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+pdf("EdgeStability1.pdf")
+plot(b1, labels = FALSE, order = "sample")
+dev.off()
+
+Edge weights stability test saved as pdf
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+pdf("EdgeDifftest1.pdf")
+plot(b1, "edge", plot="difference", onlyNonZero=TRUE, order = "sample")
+dev.off()
+
+Plotting
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+pdf("plot1.pdf")
+plot1 <- plot(network1, layout="spring", vsize=6, border.color="black", groups=groups1, color=c('lightblue', 'orange'))
+dev.off()
+
+create centrality plot and save as pdf
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+pdf("CentralityPlot1.pdf", width=5)
+c1 <- centralityPlot(plot1)
+dev.off()
+
+Inspect Centrality Indices
+
+{r echo=FALSE, warning=FALSE, error=FALSE}
+Centrality1 <- centralityTable(network1)
+write.csv(Centrality1, "Centrality1.csv")
+view(Centrality1)
+
+get the edges strength/ correlations
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+edges1<-getWmat(network1)
+write.csv(edges1, "edges1.csv")
+
+Estimate the Bridge Values
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+bridge1<-bridge(plot1, communities=c('1', '2', '2', '2', '2', '2', '2'), useCommunities = "all", directed = NULL, nodes = NULL)
+view(bridge1)
+
+Plotting Bridges Strength
+
+{r}
+pdf("bridgecentrality1.pdf", width = 5)
+plot(bridge1, include = "Bridge Strength")
+dev.off()
+
+Network 2
+
+{r}
+myvarsnet2<-c("ScrOnlineV", "prodromal_1b_y", "prodromal_2b_y", "prodromal_3b_y", "prodromal_4b_y", "prodromal_5b_y", "prodromal_6b_y",
+"prodromal_7b_y", "prodromal_8b_y", "prodromal_9b_y", "prodromal_10b_y", "prodromal_11b_y", "prodromal_12b_y", "prodromal_13b_y", "prodromal_14b_y",
+"prodromal_15b_y", "prodromal_16b_y", "prodromal_17b_y", "prodromal_18b_y",
+"prodromal_19b_y", "prodromal_20b_y", "prodromal_21b_y")
+datanet2<-data13[myvarsnet2]
+
+Estimate Network
+
+{r echo=FALSE, warning=FALSE, error=FALSE}
+network2 <- estimateNetwork(datanet2, default="EBICglasso")
+
+Grouping nodes
+
+{r echo=FALSE, warning=FALSE, error=FALSE}
+groups2=list("Psychotic"=c(2:22), "Screen time"=c(1))
+
+Estimate Network Stability by bootstrapping network
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+#Default Bootstrapping
+b3 <- bootnet(network2, boots=1000, statistics=c("strength", "expectedInfluence", "edge"))
+#Case Dropping Bootstrapping
+b4 <- bootnet(network2, boots=1000, type="case", statistics=c("strength", "expectedInfluence", "edge"))
+
+Get centrality stability coefficient
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+corStability(b4)
+
+Stability of the Network Plotting
+
+{r}
+pdf("CentrStability2.pdf")
+plot(b4)
+dev.off()
+
+Strength Centrality Diff Test, saved as pdf
+
+{r}
+pdf("CentralityDifference2.pdf")
+plot(b3, "strength", order="sample", labels=TRUE)
+dev.off()
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+pdf("EdgeStability2.pdf")
+plot(b3, labels = FALSE, order = "sample")
+dev.off()
+
+Edge weights stability test saved as pdf
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+pdf("EdgeDifftest2.pdf")
+plot(b3, "edge", plot="difference", onlyNonZero=TRUE, order = "sample")
+dev.off()
+
+Plotting
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+pdf("plot2.pdf")
+plot2 <- plot(network2, layout="spring", vsize=10, border.color="black", groups=groups2, color=c('lightblue', 'orange'))
+dev.off()
+
+create centrality plot and save as pdf
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+pdf("CentralityPlot2.pdf", width=5)
+c2 <- centralityPlot(plot2)
+dev.off()
+
+Inspect Centrality Indices
+
+{r echo=FALSE, warning=FALSE, error=FALSE}
+Centrality2 <- centralityTable(network2)
+write.csv(Centrality2, "Centrality1.csv")
+view(Centrality2)
+
+get the edges strength/ correlations
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+edges2<-getWmat(network2)
+write.csv(edges2, "edges2.csv")
+
+Estimate the Bridge Values
+
+{r echo=FALSE, error=FALSE, warning=FALSE}
+bridge1<-bridge(plot1, communities=c('1', '1', '1', '1', '1', '1', '2', '2', '2'), useCommunities = "all", directed = NULL, nodes = NULL)
+view(Bridges)
+
+Plotting Bridges Strength
+
+{r}
+pdf("bridgecentrality1.pdf", width = 5)
+plot(bridge1, include = "Bridge Strength")
+dev.off()
+
